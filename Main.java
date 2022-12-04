@@ -1,41 +1,38 @@
-import java.util.*;
-
-class Computer implements Comparable{
-    int serial;
-    String owner;
-    Computer(int serial, String owner){
-        this.serial = serial;
-        this.owner = owner;
-    }
-    public int compareTo(Object o){
-        return this.serial - ((Computer)o).serial;
-    }
-    public String toString(){
-        return serial + " "+owner;
-    }
+@FunctionalInterface
+interface MyFunction{
+    void run();
 }
 
 public class Main {
+    static void execute(MyFunction f){
+        f.run();
+    }
+    static MyFunction getMyFunction(){ //반환타입이 함수형 인터페이스(MyFunction)인 메서드
+        /*
+        MyFunction f = () -> System.out.println("f3.run()");
+        return f;
+        */ //한 줄로 줄이기
+        return () -> System.out.println("f3.run()");
+    }
+
     public static void main(String[] args) {
+        //람다식으로 MyFunction의 run()을 구현
+        MyFunction f1 = () -> System.out.println("f1.run()");
 
-        List<Computer> computers = new ArrayList<Computer>();
-        computers.add(new Computer(500, "egoing"));
-        computers.add(new Computer(200, "leezche"));
-        computers.add(new Computer(3233, "graphttie"));
-        Iterator i = computers.iterator();
-        System.out.println("before");
-        while(i.hasNext()){
-            System.out.println(i.next());
-        }
-        Collections.sort(computers); //Collections 클래스는 데이터와 관련된 작업들을 처리할 수 있게 도와주는 클래스
-                                     //Collections 안의 메소드들은 전부 static이라 인스턴스로 만들 필요없이 바로 사용 가능
-                                     //sort는 인자로 list데이터타입 받고 집어넣으면 정렬해준다
-        System.out.println("\nafter");
-        i = computers.iterator();
-        while(i.hasNext()){
-            System.out.println(i.next());
-        }
+        MyFunction f2 = new MyFunction() { //익명클래스로 run()을 구현
+            @Override
+            public void run() { //public을 반드시 붙여야함
+                System.out.println("f2.run()");
+            }
+        };
 
+        MyFunction f3 = getMyFunction();
 
+        f1.run();
+        f2.run();
+        f3.run();
+
+        execute(f1);
+        execute( () -> System.out.println("run()"));
     }
 }
